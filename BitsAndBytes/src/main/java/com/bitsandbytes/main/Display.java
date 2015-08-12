@@ -1,10 +1,14 @@
 package com.bitsandbytes.main;
 
 import java.awt.Canvas;
+import java.awt.Graphics;
+import java.awt.image.BufferStrategy;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferInt;
 
 import javax.swing.JFrame;
 
-import com.bitsandbytes.graphics.Render;
+import com.bitsandbytes.main.graphics.Screen;
 
 public class Display extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
@@ -15,10 +19,14 @@ public class Display extends Canvas implements Runnable {
 
 	private Thread thread;
 	private boolean running = false;
-	private Render render;
-	
+	private BufferedImage img;
+	private Screen screen;
+	private int pixels[];
+
 	public Display() {
-		render = new Render(WIDTH, HEIGHT);
+		screen = new Screen(WIDTH, HEIGHT);
+		img = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_RGB);
+		pixels = ((DataBufferInt) img.getRaster().getDataBuffer()).getData();
 	}
 
 	public void start() {
@@ -35,15 +43,30 @@ public class Display extends Canvas implements Runnable {
 			render();
 		}
 	}
-	
+
 	private void tick() {
-		
+
 	}
-	
+
 	private void render() {
-		
+		BufferStrategy bs = this.getBufferStrategy();
+		if (bs == null) {
+			createBufferStrategy(3);
+			return;
+		}
+
+		screen.render();
+
+		for (int i = 0; i < WIDTH * HEIGHT; i++) {
+			pixels[i] = screen.pixels[i];
+		}
+
+		Graphics g = bs.getDrawGraphics();
+		g.drawImage(img, WIDTH, HEIGHT, null);
+		g.dispose();
+		bs.show();
+
 	}
-	
 
 	public void stop() {
 		if (!running)
@@ -68,9 +91,9 @@ public class Display extends Canvas implements Runnable {
 		frame.setLocationRelativeTo(null);
 		frame.setResizable(false);
 		frame.setVisible(true);
-		
+
 		System.out.println("running...");
-		
+
 		game.start();
 	}
 
