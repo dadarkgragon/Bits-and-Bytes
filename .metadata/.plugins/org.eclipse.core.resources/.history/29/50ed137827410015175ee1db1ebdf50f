@@ -1,0 +1,10 @@
+package com.bitsandbytes.main.graphics;
+
+public class Screen extends Render{
+	
+	public Screen(int width, int heigth) {
+		super(width, height);
+		
+	}
+
+}
