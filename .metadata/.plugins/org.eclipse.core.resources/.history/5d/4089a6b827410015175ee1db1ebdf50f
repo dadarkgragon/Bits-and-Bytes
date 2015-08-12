@@ -1,0 +1,16 @@
+package com.bitsandbytes.main.graphics;
+
+public class Screen extends Render{
+	
+	private Render test;
+	
+	public Screen(int width, int heigth) {
+		super(width, height);
+		
+	}
+	
+	public void render() {
+		draw(test, 0, 0);
+	}
+
+}
